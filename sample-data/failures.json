@@ -1,0 +1,47 @@
+[
+  {
+    "component_id": "RDBMS_PRIMARY_01",
+    "timestamp": "2026-05-01T10:00:00Z",
+    "severity": "P1",
+    "payload": {
+      "component_type": "rdbms",
+      "error_code": "PG-CONNECTION-SATURATION",
+      "message": "PostgreSQL connection pool exhausted",
+      "connections_used": 498,
+      "connections_max": 500
+    }
+  },
+  {
+    "component_id": "RDBMS_PRIMARY_01",
+    "timestamp": "2026-05-01T10:00:04Z",
+    "severity": "P1",
+    "payload": {
+      "component_type": "rdbms",
+      "error_code": "PG-QUERY-TIMEOUT",
+      "message": "Checkout queries timing out after 5s",
+      "latency_ms": 5234
+    }
+  },
+  {
+    "component_id": "CACHE_CLUSTER_01",
+    "timestamp": "2026-05-01T10:00:08Z",
+    "severity": "P1",
+    "payload": {
+      "component_type": "cache",
+      "error_code": "REDIS-REPLICA-LAG",
+      "message": "Replica lag above threshold",
+      "lag_ms": 940
+    }
+  },
+  {
+    "component_id": "MCP_HOST_07",
+    "timestamp": "2026-05-01T10:00:10Z",
+    "severity": "P2",
+    "payload": {
+      "component_type": "mcp",
+      "error_code": "MCP-TOOL-TIMEOUT",
+      "message": "MCP host failed to answer tool request",
+      "timeout_ms": 30000
+    }
+  }
+]

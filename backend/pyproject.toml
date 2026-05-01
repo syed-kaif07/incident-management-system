@@ -1,0 +1,28 @@
+[project]
+name = "ims-backend"
+version = "0.1.0"
+description = "Production-grade Incident Management System backend"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi==0.115.6",
+  "uvicorn[standard]==0.34.0",
+  "redis==5.2.1",
+  "motor==3.6.0",
+  "sqlalchemy[asyncio]==2.0.36",
+  "asyncpg==0.30.0",
+  "pydantic==2.10.4",
+  "pydantic-settings==2.7.1",
+  "tenacity==9.0.0",
+  "httpx==0.28.1",
+]
+
+[project.optional-dependencies]
+test = [
+  "pytest==8.3.4",
+  "pytest-asyncio==0.25.0",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+pythonpath = ["."]
+testpaths = ["tests"]
