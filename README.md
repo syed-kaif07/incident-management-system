@@ -2,7 +2,7 @@
 
 ## Architecture Diagram
 
-![Architecture](docs/architecture.png)
+![Architecture](./docs/Architecture.png)
 
 ## Overview
 Distributed system for ingesting, processing, and analyzing incident signals using FastAPI, Redis Streams, and worker consumers.
