@@ -1,54 +1,197 @@
+# =============================================================================
 # Python
+# =============================================================================
 __pycache__/
 *.py[cod]
+*$py.class
 *.pyo
 *.pyd
+.Python
 *.so
+*.egg
 *.egg-info/
-.eggs/
 dist/
 build/
-.pytest_cache/
-.coverage
-htmlcov/
-.mypy_cache/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.manifest
+*.spec
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
 .venv/
 venv/
-.env
+ENV/
+env/
+.ENV/
+env.bak/
+venv.bak/
 
-# Node/React
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Testing
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# Type checking
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# =============================================================================
+# Node / React / Frontend
+# =============================================================================
 node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Build outputs
 dist/
+dist-ssr/
 build/
-.vite/
-.npm/
-.yarn/
-.eslintcache
+.next/
+out/
+.nuxt/
+.cache/
+.vuepress/dist/
+
+# Package managers
 package-lock.json
 yarn.lock
+pnpm-lock.yaml
 
-# Docker volumes
+# Vite
+.vite/
+
+# ESLint
+.eslintcache
+
+# =============================================================================
+# Docker
+# =============================================================================
+.dockerignore
+docker-compose.override.yml
+docker-compose.local.yml
+
+# Docker volumes (local development data)
 postgres_data/
 mongo_data/
 redis_data/
 
+# =============================================================================
+# Environment & Secrets
+# =============================================================================
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
+*.key
+secrets/
+credentials/
+*.credentials
+
+# =============================================================================
 # Database
+# =============================================================================
 *.db
 *.sqlite
 *.sqlite3
+*.db-shm
+*.db-wal
 
+# =============================================================================
+# Logs
+# =============================================================================
+*.log
+logs/
+*.log.*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# =============================================================================
 # OS
+# =============================================================================
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
+desktop.ini
 *.swp
 *.swo
 *~
+.project
+.settings/
 
-# IDE
+# =============================================================================
+# IDE & Editor
+# =============================================================================
 .vscode/
 .idea/
 *.iml
+*.iws
+*.ipr
+.project
+.classpath
+.settings/
+*.sublime-project
+*.sublime-workspace
+.sourcemint/
+.cache/
+.node_repl_history
 
-# Logs
-*.log
-logs/
+# =============================================================================
+# Misc
+# =============================================================================
+*.bak
+*.tmp
+*.temp
+*.orig
+.rej
+~$*
+*.pid
+*.seed
+*.pid.lock
+.cache/
+.parcel-cache/
+.vcr/
+*.tsbuildinfo
