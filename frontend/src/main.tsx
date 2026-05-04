@@ -15,8 +15,18 @@ type Incident = {
   severity: Severity;
   start_time: string;
   end_time?: string | null;
+  resolved_at?: string | null;
   mttr_seconds?: number | null;
+  signal_count?: number;
   rca?: RCA | null;
+};
+
+// Paginated response shape from GET /incidents/active
+type PaginatedIncidents = {
+  items: Incident[];
+  total: number;
+  page: number;
+  page_size: number;
 };
 
 type RCA = {
@@ -53,9 +63,13 @@ async function api<T>(path: string, options?: RequestInit): Promise<T> {
 
 function formatDuration(seconds?: number | null) {
   if (seconds === null || seconds === undefined) return "Pending";
+  if (seconds < 60) return `${Math.round(seconds)}s`;
   const mins = Math.floor(seconds / 60);
-  const secs = seconds % 60;
-  return `${mins}m ${secs}s`;
+  const secs = Math.round(seconds % 60);
+  if (seconds < 3600) return `${mins}m ${secs}s`;
+  const hours = Math.floor(seconds / 3600);
+  const remainMins = Math.floor((seconds % 3600) / 60);
+  return `${hours}h ${remainMins}m`;
 }
 
 function toDateTimeLocal(value?: string | null) {
@@ -81,7 +95,11 @@ function App() {
   async function refresh() {
     try {
       setError(null);
-      const active = await api<Incident[]>("/incidents/active");
+      // API now returns PaginatedIncidents — extract .items
+      const response = await api<PaginatedIncidents | Incident[]>("/incidents/active");
+      const active: Incident[] = Array.isArray(response)
+        ? response
+        : (response as PaginatedIncidents).items ?? [];
       setIncidents(active);
       if (!selectedId && active.length > 0) setSelectedId(active[0].id);
     } catch (err) {
@@ -112,7 +130,9 @@ function App() {
 
   useEffect(() => {
     if (!selectedId) return;
-    loadDetail(selectedId).catch((err) => setError(err instanceof Error ? err.message : "Failed to load incident"));
+    loadDetail(selectedId).catch((err) =>
+      setError(err instanceof Error ? err.message : "Failed to load incident")
+    );
   }, [selectedId]);
 
   const nextStatus = useMemo(() => {
@@ -142,6 +162,7 @@ function App() {
     if (!detail) return;
     setBusy(true);
     try {
+      // Step 1: Submit RCA
       await api<RCA>(`/incidents/${detail.id}/rca`, {
         method: "POST",
         body: JSON.stringify({
@@ -149,10 +170,18 @@ function App() {
           submitted_at: new Date(rca.submitted_at).toISOString(),
         }),
       });
-      let updated = await api<Incident>(`/incidents/${detail.id}`);
-      if (closeAfter) {
-        updated = await api<Incident>(`/incidents/${detail.id}/close`, { method: "POST" });
+
+      // Step 2: If closeAfter, transition to CLOSED via PATCH /status
+      // /close endpoint removed — all transitions go through PATCH /status
+      if (closeAfter && detail.status === "RESOLVED") {
+        await api<Incident>(`/incidents/${detail.id}/status`, {
+          method: "PATCH",
+          body: JSON.stringify({ status: "CLOSED" }),
+        });
       }
+
+      // Step 3: Reload detail
+      const updated = await api<Incident>(`/incidents/${detail.id}`);
       setDetail(updated);
       await refresh();
     } catch (err) {
@@ -187,6 +216,9 @@ function App() {
                 <strong>{incident.component_id}</strong>
                 <small>{incident.status}</small>
               </span>
+              {incident.signal_count !== undefined && incident.signal_count > 0 && (
+                <small style={{ marginLeft: "auto", opacity: 0.6 }}>{incident.signal_count} signals</small>
+              )}
             </button>
           ))}
           {incidents.length === 0 && <p className="empty">No active incidents.</p>}
@@ -212,6 +244,9 @@ function App() {
               <div className="statusPanel">
                 <span>{detail.status}</span>
                 <small>MTTR {formatDuration(detail.mttr_seconds)}</small>
+                {detail.signal_count !== undefined && (
+                  <small>{detail.signal_count} signals</small>
+                )}
               </div>
             </div>
 
@@ -226,6 +261,12 @@ function App() {
                 <Clock size={16} />
                 {new Date(detail.start_time).toLocaleString()}
               </span>
+              {detail.resolved_at && (
+                <span>
+                  <CheckCircle2 size={16} />
+                  Resolved {new Date(detail.resolved_at).toLocaleString()}
+                </span>
+              )}
             </div>
 
             <div className="grid">
